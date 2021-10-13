@@ -1,15 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import client from "../client";
 
 function useFetchedGoals() {
   const [pendingGoals, setPendingGoals] = useState([]);
   const [goalsDone, setGoalsDone] = useState([]);
-
-  //   useEffect(() => {
-  //     getPendingGoals();
-  //     getGoalsDone();
-  //   }, []);
 
   const getPendingGoals = async () => {
     const data = await fetch(`${client}`);
@@ -59,9 +54,9 @@ function useFetchedGoals() {
       body: JSON.stringify(dataEdited),
     });
 
-    setPendingGoals(
-      pendingGoals.map((goal) => (goal.id === id ? dataEdited : goal))
-    );
+    // setPendingGoals(
+    //   pendingGoals.map((goal) => (goal.id === id ? dataEdited : goal))
+    // );
   };
 
   return {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -11,7 +11,10 @@ import AppButton from "../Components/AppButton";
 import AppTextInput from "../Components/AppTextInput";
 import useCreateGoalAnimation from "../Hooks/useCreateGoalAnimation";
 
-function CreateGoal({ onCancelCreateNewGoal, pendingGoals, setPendingGoals }) {
+import { PendingGoalsContext } from "../screens.js/Home";
+
+function CreateGoal({ onCancelCreateNewGoal, setPendingGoals }) {
+  const { pendingGoals } = useContext(PendingGoalsContext);
   const { width, height } = useWindowDimensions();
   const scale = useCreateGoalAnimation();
   const [newGoal, setNewGoal] = useState("");

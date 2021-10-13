@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, Text, FlatList } from "react-native";
 import AppButton from "../Components/AppButton";
 import AppTextInput from "../Components/AppTextInput";
@@ -8,8 +8,8 @@ function EditGoal({ navigation, route }) {
   const { id, goalName, goalDescription } = route.params;
   const [newGoalName, setNewGoalName] = useState(goalName);
   const [newGoalDescription, setNewGoalDescription] = useState(goalDescription);
-
   const { editGoal } = useFetchedGoals();
+
   return (
     <View style={styles.card}>
       <AppTextInput

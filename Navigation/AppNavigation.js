@@ -22,7 +22,9 @@ const AppNavigation = () => (
     <Drawer.Screen
       name="Done"
       component={Done}
-      listeners={{ focus: () => console.log("hola") }}
+      listeners={{
+        focus: () => console.log("hello from Drawer navigation listeners"),
+      }}
       options={{
         title: "Goals done",
       }}

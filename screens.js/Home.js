@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -8,19 +8,25 @@ import {
   FlatList,
   Animated,
 } from "react-native";
+
 import AppTextInput from "../Components/AppTextInput";
 import useFetchedGoals from "../Hooks/useFetchedGoals";
 import CreateGoal from "./CreateGoal";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { FontAwesome5 } from "@expo/vector-icons";
 import useShowCreateNewGoal from "../Hooks/useShowCreateNewGoal";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 const ActionIcon = Animated.createAnimatedComponent(FontAwesome5);
+export const PendingGoalsContext = React.createContext();
 
 function Home({ navigation }) {
   const { width, height } = useWindowDimensions();
+  const { isInternetReachable } = useNetInfo();
+
   const [createNewGoal, cancelCreateNewGoal, showCreateNewGoal] =
     useShowCreateNewGoal();
+
   const swipeRef = useRef();
   const closeSwipe = () => {
     swipeRef.current.close();
@@ -45,7 +51,7 @@ function Home({ navigation }) {
     return () => {
       setPendingGoals([]);
       setGoalDone([]);
-      //   unsuscribe();
+      unsuscribe();
     };
   }, [navigation]);
 
@@ -54,8 +60,8 @@ function Home({ navigation }) {
   }, [showCreateNewGoal]);
 
   const editGoal = (item) => {
-    closeSwipe();
     navigation.navigate("EditGoal", item);
+    closeSwipe();
   };
 
   const RightAction = ({ progress, dragX, onDelete, onDone, onEdit }) => {
@@ -145,11 +151,18 @@ function Home({ navigation }) {
   return (
     <View style={styles.container}>
       {showCreateNewGoal && (
-        <CreateGoal
-          onCancelCreateNewGoal={cancelCreateNewGoal}
-          pendingGoals={pendingGoals}
-          setPendingGoals={setPendingGoals}
-        />
+        <PendingGoalsContext.Provider value={{ pendingGoals }}>
+          <CreateGoal
+            onCancelCreateNewGoal={cancelCreateNewGoal}
+            //pendingGoals={pendingGoals}
+            setPendingGoals={setPendingGoals}
+          />
+        </PendingGoalsContext.Provider>
+      )}
+      {!isInternetReachable && (
+        <Text style={{ color: "red", fontWeight: "bold", alignSelf: "center" }}>
+          Please check your internet connection
+        </Text>
       )}
       <FlatList
         data={pendingGoals}
@@ -162,6 +175,7 @@ function Home({ navigation }) {
       <TouchableOpacity
         style={[styles.newGoalButton, { top: height / 1.3, left: width / 1.3 }]}
         onPress={createNewGoal}
+        disabled={!isInternetReachable}
       >
         <Text style={{ fontSize: 30, color: "#fff" }}>+</Text>
       </TouchableOpacity>
